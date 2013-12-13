@@ -1,0 +1,30 @@
+{
+  "name": "express-middleware-timer",
+  "version": "0.0.0",
+  "description": "A simple timer implementation for debugging express middleware.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha ./test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yp-engineering/express-middleware-timer.git"
+  },
+  "keywords": [
+    "express",
+    "middleware",
+    "timer",
+    "performance",
+    "debuging"
+  ],
+  "author": "Joshua P. Mervine <joshua@mervine.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yp-engineering/express-middleware-timer/issues"
+  },
+  "homepage": "https://github.com/yp-engineering/express-middleware-timer",
+  "devDependencies": {
+    "mocha": "~1.15.1",
+    "express": "~3.4.7"
+  }
+}
