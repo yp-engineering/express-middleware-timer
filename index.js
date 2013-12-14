@@ -46,9 +46,7 @@ function init(req, res, next) {
     next();
 }
 
-function report(req,res,next) {
-    if (OFF || !res._timer || !res._timer.times) return next();
-
+function calculate(req, res) {
     // sillyness to cleanup reporting
     var report = {
         request: { url: req.url, headers: req.headers },
@@ -76,18 +74,24 @@ function report(req,res,next) {
     });
 
     updateReport(res._timer);
+    return report;
+}
+
+function report(req,res,next) {
+    next();
+
+    if (OFF || !res._timer || !res._timer.times) return;
 
     // report
     console.log('------------------------------');
-    console.dir(report);
+    console.dir(calculate(req, res));
     console.log('------------------------------');
-    next();
 }
 
 module.exports = {
     instrument: instrument,
     init: init,
-    report: report
+    report: report,
+    calculate: calculate
 };
-
 

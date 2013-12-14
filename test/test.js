@@ -3,7 +3,12 @@ process.env.TIMER = true;
 var assert = require('assert');
 var emt = require('../');
 
-var req = { headers: {} };
+var req = {
+    url: '/foo/bar',
+    headers: {
+        foo: 'bar'
+    }
+};
 
 describe('init', function() {
     it('should init timer', function() {
@@ -19,6 +24,25 @@ describe('init', function() {
         assert.ok(res._timer.times);
         assert.ok(nextCalled);
 
+    });
+});
+
+describe('calculate', function () {
+    it('should return report json', function() {
+        var res = {
+            _timer: {
+                start: Date.now(),
+                last:  Date.now(),
+                times: {
+                }
+            }
+        };
+
+        var report = emt.calculate(req,res);
+        assert.equal(report.request.url, '/foo/bar');
+        assert.equal(report.request.headers.foo, 'bar');
+        assert.equal(typeof report.timers.startup.from_start, 'number');
+        assert.equal(typeof report.timers.startup.took, 'number');
     });
 });
 
