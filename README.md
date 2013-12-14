@@ -12,7 +12,7 @@ Implementation
 
 > Note:
 >
-> See [`example/app.js`](example/app.js) for a detailed working example.
+> See [`example/app1.js`](example/app1.js) for a detailed working example.
 
 ``` javascript
 // require module
@@ -23,6 +23,17 @@ app.use(emt.init);
 
 // instrument middleware
 app.use(emt.instrument(myMiddleware), 'myMiddleware');
+
+// instrument array of middlewares
+var middlewares = emt.instrument([
+    middlewareOne,
+    middlewareTwo,
+    middlewareThree
+]);
+
+middleware.forEach(function(middleware) {
+    app.use(middleware);
+});
 
 // call report
 app.use(emt.report);
@@ -43,7 +54,7 @@ To enable your timer, start your application with `TIMER=true`.
 TIMER=true node ./app.js
 
 # to start the example
-TIMER=true node ./example/app.js
+TIMER=true node ./example/app1.js
 ```
 
 Sample Log Output
@@ -51,9 +62,9 @@ Sample Log Output
 
 > Note:
 >
-> See [`example/app.js`](example/app.js) for the code that generated this output.
+> See [`example/app1.js`](example/app1.js) for the code that generated this output.
 
-``` json
+``` javascript
 { request:
    { url: '/',
      headers:

@@ -1,19 +1,38 @@
 var OFF = (!process.env.TIMER);
 
+var instrumented = 0;
 function instrument(middleware, name) {
     if (OFF) return middleware;
 
-    return function wrapper(req,res,next) {
-        if (res._timer && res._timer.times) {
-            name = name || middleware.name || 'anonymous middlware';
-            res._timer.times[name] = {
-                from_start: Date.now()-res._timer.start,
-                last: Date.now()-res._timer.last
-            };
-            res._timer.last = Date.now();
+    function bindWrapper(m, name) {
+        return function wrapper(req, res, next) {
+            if (res._timer && res._timer.times) {
+                res._timer.times[name] = {
+                    from_start: Date.now()-res._timer.start,
+                    last: Date.now()-res._timer.last
+                };
+                res._timer.last = Date.now();
+            }
+            m(req,res,next);
+        };
+    }
+
+    if (typeof middleware === 'function') {
+        var position = instrumented++;
+        name = name || middleware.name || 'anonymous middlware #'+position;
+        return bindWrapper(middleware, name);
+    }
+
+    var itter = 0; // if named
+    return middleware.map(function(m) {
+        var position = instrumented++;
+        var newname;
+        if (name) {
+            newname = name + ' #' + itter++;
         }
-        middleware(req,res,next);
-    };
+        newname = newname || m.name || 'anonymous middlware #'+position;
+        return bindWrapper(m, newname);
+    });
 }
 
 function init(req, res, next) {

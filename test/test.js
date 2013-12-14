@@ -57,31 +57,68 @@ describe('report', function() {
 });
 
 describe('instrument', function() {
-    it('should instrument timers', function() {
+    describe('one', function() {
+        it('should instrument a timer', function() {
 
-        var res = {
-            _timer: {
-                start: Date.now(),
-                last:  Date.now(),
-                times: {
+            var res = {
+                _timer: {
+                    start: Date.now(),
+                    last:  Date.now(),
+                    times: {
+                    }
                 }
+            };
+
+            var nextCalled;
+            var next = function next() { nextCalled = true; };
+
+            function middleware(req,res,next) {
+                next();
             }
-        };
 
-        var nextCalled;
-        var next = function next() { nextCalled = true; };
+            var instrumented = emt.instrument(middleware);
 
-        function middleware(req,res,next) {
-            next();
-        }
+            instrumented(req,res,next);
 
-        var instrumented = emt.instrument(middleware);
+            assert.equal(typeof res._timer.times.middleware.from_start, 'number');
+            assert.equal(typeof res._timer.times.middleware.last, 'number');
+            assert.ok(nextCalled);
+        });
+    });
+    describe('many', function() {
+        it('should instrument all timers', function() {
 
-        instrumented(req,res,next);
+            var res = {
+                _timer: {
+                    start: Date.now(),
+                    last:  Date.now(),
+                    times: {
+                    }
+                }
+            };
 
-        assert.equal(typeof res._timer.times.middleware.from_start, 'number');
-        assert.equal(typeof res._timer.times.middleware.last, 'number');
-        assert.ok(nextCalled);
+            var nextCalled = 0;
+            var next = function next() { nextCalled++; };
+
+            var middlewares = [
+                function(req,res,next) {
+                    next();
+                },
+                function(req,res,next) {
+                    next();
+                }
+            ];
+
+            var instrumented = emt.instrument(middlewares, 'many');
+
+            instrumented.forEach(function(middleware) {
+                middleware(req,res,next);
+            });
+
+            assert.equal(typeof res._timer.times['many #0'].from_start, 'number');
+            assert.equal(typeof res._timer.times['many #1'].last, 'number');
+            assert.equal(nextCalled, 2);
+        });
     });
 });
 
