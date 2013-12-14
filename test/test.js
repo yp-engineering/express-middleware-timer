@@ -1,7 +1,7 @@
 process.env.TIMER = true;
 
 var assert = require('assert');
-var performance = require('../');
+var emt = require('../');
 
 var req = { headers: {} };
 
@@ -13,7 +13,7 @@ describe('init', function() {
         var nextCalled;
         var next = function next() { nextCalled = true; };
 
-        performance.init(req,res,next);
+        emt.init(req,res,next);
         assert.equal(typeof res._timer.start, 'number');
         assert.equal(typeof res._timer.last, 'number');
         assert.ok(res._timer.times);
@@ -43,7 +43,7 @@ describe('report', function() {
         console.log = function(){ calledLog = true; };
         console.dir = function(){ calledDir = true; };
 
-        performance.report(req,res,next);
+        emt.report(req,res,next);
 
         // enable console.log && console.dir
         console.log = log;
@@ -75,7 +75,7 @@ describe('instrument', function() {
             next();
         }
 
-        var instrumented = performance.instrument(middleware);
+        var instrumented = emt.instrument(middleware);
 
         instrumented(req,res,next);
 

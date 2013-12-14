@@ -16,16 +16,16 @@ Implementation
 
 ``` javascript
 // require module
-var etm = require('express-middleware-timer');
+var emt = require('express-middleware-timer');
 
 // init timer
-app.use(etm.init);
+app.use(emt.init);
 
 // instrument middleware
-app.use(etm.instrument(myMiddleware), 'myMiddleware');
+app.use(emt.instrument(myMiddleware), 'myMiddleware');
 
 // call report
-app.use(etm.report);
+app.use(emt.report);
 
 // routes
 app.get('/', myRoute);

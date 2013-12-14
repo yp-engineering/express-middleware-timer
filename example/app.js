@@ -1,12 +1,12 @@
 var express = require('express');
-var etm = require('../'); // require('express-middleware-timer');
+var emt = require('../'); // require('express-middleware-timer');
 
 var app = express();
 
 /***
  * Initialize express-timer-middleware
  ***************************************************/
-app.use(etm.init);
+app.use(emt.init);
 
 /***
  * time slow middleware
@@ -18,7 +18,7 @@ function slowMiddleware(req, res, next) {
     }, 200);
 }
 
-app.use(etm.instrument(slowMiddleware));
+app.use(emt.instrument(slowMiddleware));
 
 /***
  * time fast middleware
@@ -28,12 +28,12 @@ var fastMiddleware = function(req, res, next) {
     next();
 };
 
-app.use(etm.instrument(fastMiddleware, 'fastMiddleware'));
+app.use(emt.instrument(fastMiddleware, 'fastMiddleware'));
 
 /***
  * Report results.
  ***************************************************/
-app.use(etm.report);
+app.use(emt.report);
 
 /***
  * Route
