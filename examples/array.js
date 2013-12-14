@@ -9,7 +9,7 @@ var app = express();
  * middleware, instrument them and then unshift init
  * and push report.
  *
- * See: example/app1.js for a more basic example.
+ * See: examples/simple.js for a more basic example.
  ***************************************************/
 
 /***
