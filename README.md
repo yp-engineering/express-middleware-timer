@@ -38,6 +38,19 @@ middleware.forEach(function(middleware) {
 // call report
 app.use(emt.report);
 
+// custom report
+app.use(function(req, res, next) {
+    next(); // first for performance
+
+    if (emt.on) {
+        var report = emt.calculate(req,res);
+        console.log('TIMER: %s %s %s',
+                        new Date(),
+                        report.request.url,
+                        JSON.stringify(report.timers));
+    }
+});
+
 // routes
 app.get('/', myRoute);
 

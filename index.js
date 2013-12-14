@@ -95,6 +95,8 @@ module.exports = {
     instrument: instrument,
     init: init,
     report: report,
-    calculate: calculate
+    calculate: calculate,
+    on: (!OFF),
+    off: OFF
 };
 

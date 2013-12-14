@@ -39,6 +39,8 @@ app.use(function(req, res, next) {
     // Call next right away for performance.
     next();
 
+    if (emt.off) return;
+
     // Write report to file.
     var report = emt.calculate(req, res);
 
@@ -54,7 +56,7 @@ app.use(function(req, res, next) {
 
     /***
      * Outputs something like the following...
-     * 
+     *
      * Sat Dec 14 2013 14:17:00 GMT-0800 (PST),/,202,10
      * Sat Dec 14 2013 14:17:02 GMT-0800 (PST),/,201,2
      * Sat Dec 14 2013 14:17:03 GMT-0800 (PST),/,200,1

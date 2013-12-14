@@ -146,3 +146,10 @@ describe('instrument', function() {
     });
 });
 
+describe('on off', function() {
+    it('should be on', function() {
+        assert.deepEqual(emt.on, true);
+        assert.deepEqual(emt.off, false);
+    });
+});
+
