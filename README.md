@@ -12,7 +12,7 @@ Implementation
 
 > Note:
 >
-> See [`examples/app.js`](examples/app.js) for a detailed working example.
+> See [`example/app.js`](example/app.js) for a detailed working example.
 
 ``` javascript
 // require module
@@ -51,7 +51,7 @@ Sample Log Output
 
 > Note:
 >
-> See [`examples/app.js`](examples/app.js) for the code that generated this output.
+> See [`example/app.js`](example/app.js) for the code that generated this output.
 
 ``` json
 { request:
