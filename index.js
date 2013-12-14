@@ -6,12 +6,13 @@ function instrument(middleware, name) {
 
     function bindWrapper(m, name) {
         return function wrapper(req, res, next) {
+            var now = Date.now();
             if (res._timer && res._timer.times) {
                 res._timer.times[name] = {
-                    from_start: Date.now()-res._timer.start,
-                    last: Date.now()-res._timer.last
+                    from_start: now-res._timer.start,
+                    last: now-res._timer.last
                 };
-                res._timer.last = Date.now();
+                res._timer.last = now;
             }
             m(req,res,next);
         };
@@ -38,9 +39,10 @@ function instrument(middleware, name) {
 function init(req, res, next) {
     if (OFF) return next();
 
+    var now = Date.now();
     res._timer = {
-        start: Date.now(),
-        last:  Date.now(),
+        start: now,
+        last:  now,
         times: {}
     };
     next();
@@ -64,8 +66,9 @@ function calculate(req, res) {
             report.timers[lastReport].from_start = reportedTimers[timer].from_start;
             report.timers[timer] = {};
         } else {
-            report.timers[lastReport].took = Date.now()-timer.last;
-            report.timers[lastReport].from_start = Date.now()-timer.start;
+            var now = Date.now();
+            report.timers[lastReport].took = now-timer.last;
+            report.timers[lastReport].from_start = now-timer.start;
         }
     }
 
