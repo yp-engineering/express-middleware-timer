@@ -1,3 +1,6 @@
+
+
+
 express-middleware-timer
 ========================
 
@@ -5,6 +8,11 @@ A simple timer implementation for debugging express middleware.
 
 > By default, `express-middleware-timer` does nothing. It's only activated
 > when your application is started with `TIMER=true`.
+
+WARNING
+=======
+
+This software should be consider in **beta** until it's available on http://npmjs.org. Use at your own risk, per the  [LICENCE](LICENCE).
 
 
 Implementation
