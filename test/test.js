@@ -10,15 +10,23 @@ var req = {
     }
 };
 
+function onEvent(e, cb) {
+    return { event: e, callback: cb };
+}
+
 describe('init', function() {
     it('should init timer', function() {
 
-        var res = { };
+        var res = {
+            on: onEvent
+        };
 
         var nextCalled;
         var next = function next() { nextCalled = true; };
 
-        emt.init(req,res,next);
+        emt.init()(req, res, next);
+
+        console.dir(res);
         assert.equal(typeof res._timer.start, 'number');
         assert.equal(typeof res._timer.last, 'number');
         assert.ok(res._timer.times);
@@ -57,23 +65,24 @@ describe('report', function() {
             }
         };
 
-        var nextCalled;
-        var next = function next() { nextCalled = true; };
+        //var nextCalled;
+        //var next = function next() { nextCalled = true; };
 
         // disable console.log && console.dir
         var calledLog, calledDir;
         var log = console.log;
         var dir = console.dir;
+
         console.log = function(){ calledLog = true; };
         console.dir = function(){ calledDir = true; };
 
-        emt.report(req,res,next);
+        emt.report(req,res);
 
         // enable console.log && console.dir
         console.log = log;
         console.dir = dir;
 
-        assert.ok(nextCalled);
+        //assert.ok(nextCalled);
         assert.ok(calledLog);
         assert.ok(calledDir);
 

@@ -36,18 +36,6 @@ function instrument(middleware, name) {
     });
 }
 
-function init(req, res, next) {
-    if (OFF) return next();
-
-    var now = Date.now();
-    res._timer = {
-        start: now,
-        last:  now,
-        times: {}
-    };
-    next();
-}
-
 function calculate(req, res) {
     // sillyness to cleanup reporting
     var report = {
@@ -80,15 +68,34 @@ function calculate(req, res) {
     return report;
 }
 
-function report(req,res,next) {
-    next();
-
+function report(req, res) {
     if (OFF || !res._timer || !res._timer.times) return;
 
     // report
     console.log('------------------------------');
     console.dir(calculate(req, res));
     console.log('------------------------------');
+}
+
+function init(reporter) {
+    return function (req, res, next) {
+        if (OFF) return next();
+
+        var now = Date.now();
+        res._timer = {
+            start: now,
+            last:  now,
+            times: {}
+        };
+
+        reporter = (typeof reporter === 'function') ? reporter : report;
+
+        res.on('header', function onHeader() {
+            reporter(req, res);
+        });
+
+        next();
+    };
 }
 
 module.exports = {

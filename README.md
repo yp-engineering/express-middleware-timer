@@ -21,7 +21,23 @@ Implementation
 var emt = require('express-middleware-timer');
 
 // init timer
-app.use(emt.init);
+app.use(emt.init());
+
+/***
+ * // custom report example
+ *
+ *  app.use(emt.init(function report(req, res) {
+ *      if (emt.on) {
+ *          var report = emt.calculate(req,res);
+ *          console.log('TIMER: %s %s %s',
+ *                          new Date(),
+ *                          report.request.url,
+ *                          JSON.stringify(report.timers));
+ *      }
+ *  });
+ *
+ *
+ ***/
 
 // instrument middleware
 app.use(emt.instrument(myMiddleware), 'myMiddleware');
@@ -35,22 +51,6 @@ var middlewares = emt.instrument([
 
 middleware.forEach(function(middleware) {
     app.use(middleware);
-});
-
-// call report
-app.use(emt.report);
-
-// custom report
-app.use(function(req, res, next) {
-    next(); // first for performance
-
-    if (emt.on) {
-        var report = emt.calculate(req,res);
-        console.log('TIMER: %s %s %s',
-                        new Date(),
-                        report.request.url,
-                        JSON.stringify(report.timers));
-    }
 });
 
 // routes
