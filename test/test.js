@@ -54,41 +54,6 @@ describe('calculate', function () {
     });
 });
 
-describe('report', function() {
-    it('should call next', function() {
-        var res = {
-            _timer: {
-                start: Date.now(),
-                last:  Date.now(),
-                times: {
-                }
-            }
-        };
-
-        //var nextCalled;
-        //var next = function next() { nextCalled = true; };
-
-        // disable console.log && console.dir
-        var calledLog, calledDir;
-        var log = console.log;
-        var dir = console.dir;
-
-        console.log = function(){ calledLog = true; };
-        console.dir = function(){ calledDir = true; };
-
-        emt.report(req,res);
-
-        // enable console.log && console.dir
-        console.log = log;
-        console.dir = dir;
-
-        //assert.ok(nextCalled);
-        assert.ok(calledLog);
-        assert.ok(calledDir);
-
-    });
-});
-
 describe('instrument', function() {
     describe('one', function() {
         it('should instrument a timer', function() {

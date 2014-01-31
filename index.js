@@ -101,7 +101,6 @@ function init(reporter) {
 module.exports = {
     instrument: instrument,
     init: init,
-    report: report,
     calculate: calculate,
     on: (!OFF),
     off: OFF
