@@ -26,7 +26,6 @@ describe('init', function() {
 
         emt.init()(req, res, next);
 
-        console.dir(res);
         assert.equal(typeof res._timer.start, 'number');
         assert.equal(typeof res._timer.last, 'number');
         assert.ok(res._timer.times);
