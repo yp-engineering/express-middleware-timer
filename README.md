@@ -27,15 +27,12 @@ app.use(emt.init());
  * // custom report example
  *
  *  app.use(emt.init(function report(req, res) {
- *      if (emt.on) {
- *          var report = emt.calculate(req,res);
- *          console.log('TIMER: %s %s %s',
- *                          new Date(),
- *                          report.request.url,
- *                          JSON.stringify(report.timers));
- *      }
+ *      var report = emt.calculate(req,res);
+ *      console.log('TIMER: %s %s %s',
+ *                      new Date(),
+ *                      report.request.url,
+ *                      JSON.stringify(report.timers));
  *  });
- *
  *
  ***/
 

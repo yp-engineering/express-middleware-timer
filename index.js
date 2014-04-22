@@ -90,7 +90,7 @@ function init(reporter) {
 
         reporter = (typeof reporter === 'function') ? reporter : report;
 
-        res.on('header', function onHeader() {
+        res.on('finish', function onResponseFinish() {
             reporter(req, res);
         });
 

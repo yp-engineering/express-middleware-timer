@@ -6,7 +6,7 @@ var app = express();
 /***
  * Initialize express-timer-middleware
  ***************************************************/
-app.use(emt.init);
+app.use(emt.init());
 
 /***
  * time slow middleware
@@ -29,11 +29,6 @@ var fastMiddleware = function(req, res, next) {
 };
 
 app.use(emt.instrument(fastMiddleware, 'fastMiddleware'));
-
-/***
- * Report results.
- ***************************************************/
-app.use(emt.report);
 
 /***
  * Route

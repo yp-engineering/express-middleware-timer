@@ -41,12 +41,7 @@ var middlewares = emt.instrument([
 /***
  * Add init to the beginning of the middleware stack.
  ***************************************************/
-middlewares.unshift(emt.init);
-
-/***
- * Add report to the end of the middleware stack.
- ***************************************************/
-middlewares.push(emt.report);
+middlewares.unshift(emt.init());
 
 /***
  * Route contain middleware.
