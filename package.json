@@ -1,6 +1,6 @@
 {
   "name": "express-middleware-timer",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "description": "A simple timer implementation for debugging express middleware.",
   "main": "index.js",
   "scripts": {

@@ -78,7 +78,7 @@ describe('instrument', function() {
             instrumented(req,res,next);
 
             assert.equal(typeof res._timer.times.middleware.from_start, 'number');
-            assert.equal(typeof res._timer.times.middleware.last, 'number');
+            assert.equal(typeof res._timer.times.middleware.took, 'number');
             assert.ok(nextCalled);
         });
     });
@@ -113,9 +113,78 @@ describe('instrument', function() {
             });
 
             assert.equal(typeof res._timer.times['many #0'].from_start, 'number');
-            assert.equal(typeof res._timer.times['many #1'].last, 'number');
+            assert.equal(typeof res._timer.times['many #1'].took, 'number');
             assert.equal(nextCalled, 2);
         });
+
+        it('should count parallel flows correctly', function(testDone) {
+            var res = {
+                _timer: {
+                    start: Date.now(),
+                    last:  Date.now(),
+                    times: {
+                    }
+                }
+            };
+
+            var nextCalled = 0;
+            var next = function next() { nextCalled++; console.log('nextCalled')};
+
+            var middlewaresParallel = [
+                function(req,res,next) {
+                    setTimeout(function() {
+                        next();
+                    }, 20)
+                },
+                function(req,res,next) {
+                    setTimeout(function() {
+                        next();
+                    }, 30)
+                }
+            ];
+
+            var instrumented = emt.instrument(middlewaresParallel, 'many');
+
+            var master = emt.instrument(function(req,res,next) {
+                var count = 0;
+                instrumented.forEach(function(middleware) {
+                    middleware(req,res,function fakeNext() {
+                        count++;
+                        if (count === instrumented.length) {
+                            next();
+                        }
+                    });
+                });
+            }, 'master');
+
+
+            function middlewareLoop(middlewares) {
+                var mw = middlewares.shift();
+                if (mw) {
+                    mw(req, res, function() {
+                        middlewareLoop(middlewares);
+                    })
+                }
+            }
+
+            var start = Date.now();
+            middlewareLoop([
+                master,
+                function() {
+                    var end = Date.now();
+                    var totalTime = end-start;
+
+                    // console.log(res._timer);
+                    assert(totalTime < 40, 'totatime');
+                    assert(res._timer.last - res._timer.last < 40, 'report time');
+                    Object.keys(res._timer.times).forEach(function(name) {
+                        var timer = res._timer.times[name];
+                        assert(timer.took < 40, 'each middleware time');
+                    })
+                    testDone();
+                }
+            ])
+        })
     });
 });
 

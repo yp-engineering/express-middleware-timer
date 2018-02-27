@@ -6,15 +6,21 @@ function instrument(middleware, name) {
 
     function bindWrapper(m, name) {
         return function wrapper(req, res, next) {
-            var now = Date.now();
-            if (res._timer && res._timer.times) {
-                res._timer.times[name] = {
-                    from_start: now-res._timer.start,
-                    last: now-res._timer.last
-                };
-                res._timer.last = now;
-            }
-            m(req,res,next);
+            var start = Date.now();
+            m(req,res,function instrumentedNext() {
+                var end = Date.now();
+                var args = Array.prototype.slice.call(arguments);
+
+                if (res._timer && res._timer.times) {
+                    res._timer.times[name] = {
+                        from_start: start-res._timer.start,
+                        took: end-start
+                    };
+                    res._timer.last = end;
+                }
+
+                next.apply(this, args);
+            });
         };
     }
 
@@ -40,31 +46,18 @@ function calculate(req, res) {
     // sillyness to cleanup reporting
     var report = {
         request: { url: req.url, headers: req.headers },
-        timers: { startup: { from_start: 0 } }
+        timers: { startup: { from_start: 0, took: 0 } }
     };
 
     var reportedTimers = res._timer.times;
 
-    function updateReport(timer) {
-        var reportNames = Object.keys(report.timers);
-        var lastReport  = reportNames[reportNames.length-1];
-
-        if (typeof timer === 'string') {
-            report.timers[lastReport].took = reportedTimers[timer].last;
-            report.timers[lastReport].from_start = reportedTimers[timer].from_start;
-            report.timers[timer] = {};
-        } else {
-            var now = Date.now();
-            report.timers[lastReport].took = now-timer.last;
-            report.timers[lastReport].from_start = now-timer.start;
-        }
-    }
-
     Object.keys(reportedTimers).forEach(function(timer) {
-        updateReport(timer);
+        report.timers[timer] = {
+            from_start: reportedTimers[timer].from_start,
+            took: reportedTimers[timer].took,
+        }
     });
 
-    updateReport(res._timer);
     return report;
 }
 
